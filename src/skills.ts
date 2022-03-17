@@ -11,13 +11,11 @@ export type SkillFunction = (attacker: BattleActor, targets: BattleActor[]) => n
  *
  * @return 攻撃の結果、対象が死亡した場合:1, 存命の場合: 0
  */
-export const randomNormalAttack: SkillFunction = (
+export const oneShotAttack: SkillFunction = (
   attacker: BattleActor,
   targets: BattleActor[],
 ): number => {
   const i = randI(targets.length);
   targets[i].beInjured(attacker.atk);
-  const isDead = targets[i].isDead();
-
-  return isDead ? 1 : 0;
+  return targets[i].isDead() ? 1 : 0;
 };

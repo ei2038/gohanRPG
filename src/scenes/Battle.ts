@@ -1,140 +1,71 @@
+import { getEnemies, getGhost, playersParty } from 'battleActors';
 import { BattleActor } from 'classes/BattleActor';
 import { system } from 'index';
-import { Scene, Time } from 'phaser';
+import { Scene } from 'phaser';
 import { sceneKeys } from './sceneKeys';
-import { getEnemies } from 'functions/generalPurpose/getEnemies';
-import { cloneDeep } from 'lodash';
-
-/*    Spread Syntax
- *    スプレッド構文構文を利用すると、
- *    簡単に配列のコピーや結合ができる。
- *    これは配列そのものへの参照ではなく、新しい配列を作る操作である。
- *    しかし、行われるのは shallow copy(浅いコピー)なので、
- *    配列の中でネストしている場合や中身がオブジェクトの場合は参照を共有することになる。
- * */
 
 export class Battle extends Scene {
-  private party: BattleActor[] = [...system.party];
-  private enemies: BattleActor[] = [];
-  private sorted: BattleActor[] = [];
-  private index: number = 0;
-  timerOneShot?: Time.TimerEvent;
-  elapsedTime: number = 0;
+  private players: BattleActor[] = playersParty;
+  private enemies: BattleActor[] = getEnemies(system.map);
+  private sorted: BattleActor[] = [...this.players, ...this.enemies].sort((a, b) => {
+    return b.speed - a.speed;
+  });
   constructor() {
     super({ key: sceneKeys.battle });
   }
 
   preload() {
-    const clone = cloneDeep(getEnemies(system.map));
-    this.enemies = clone;
-    this.sorted = [...this.party, ...this.enemies].sort((a, b) => {
-      return b.speed - a.speed;
-    });
-
-    system.isBattle = true;
+    console.log('preload');
+    console.log('end preload');
   }
 
   create() {
-    // UIシーンを起動
-    this.scene.launch(sceneKeys.ui, this.enemies);
-
-    // バトル開始
-    this.nextTurn();
+    console.log('create');
   }
 
-  nextTurn() {
-    this.logAllActorHP();
-    const actor = this.sorted[this.index];
-    const enemies = this.getEnemyGroup(actor, this.party, this.enemies);
-    if (!actor.isDead()) {
-      console.log('####################');
-      console.log(`${actor.name}のターン`);
-      console.log('####################');
-      actor.getRandSkill()(actor, enemies);
+  update() {
+    console.log('update');
+    /**
+     * バトルのループ
+     * 1.敵味方のどちらかのHPが0になっていれば元いたマップに戻る
+     * 2.ソートした配列の先頭からplayersかenemiesかどちらに属するかを判定
+     * 3.属していない方の配列を対象に攻撃をする
+     * 4.1へ戻る
+     */
+    const isEnd = this.isEndBattle(this.players, this.enemies);
+    console.log(`isEnd: ${isEnd}`);
 
-      this.index = (this.index + 1) % this.sorted.length;
-      const endBattle = this.isEndBattle(this.party, this.enemies);
-      // endBattleが0でない場合は、ターン終了
-      if (endBattle !== 0) {
-        system.isBattle = false;
-        switch (endBattle) {
-          case 1:
-            console.log('プレイヤーの勝利');
-            break;
-          case 2:
-          case 3:
-            console.log('敵の勝利');
-            break;
-        }
-        // HPが0になった味方はマップに戻るときにHP1にする
-        this.party.forEach((actor) => {
-          if (actor.isDead()) {
-            actor.beHealed(1);
-          }
-        });
-        this.backToMap();
+    if (isEnd != 0) {
+      switch (isEnd) {
+        case 1:
+          console.log('player win');
+          break;
+        case 2:
+          console.log('enemy win');
+          break;
+        case 3:
+          console.log('draw');
+          break;
       }
-    } else {
-      // sortedの中で、actorが死んでいる場合は、それを除く
-      this.sorted = this.sorted.filter((a) => a !== actor);
-      console.log(`${actor.name}は死んでしまった`);
+      // exit battle scene
+      this.scene.sleep(this);
+      this.scene.switch(system.map);
     }
 
-    this.index = (this.index + 1) % this.sorted.length;
-    this.time.addEvent({ delay: 3000, callback: this.nextTurn, callbackScope: this });
+    for (const actor of this.sorted) {
+      actor.getRandSkill()(actor, this.getEnemyGroup(actor, this.players, this.enemies));
+      console.log(actor.name + ': ' + actor.hp.current);
+    }
   }
 
-  /**
-   * @brief もといたマップシーンに戻る
-   *
-   * @return void
-   */
-  backToMap() {
-    this.scene.stop(sceneKeys.ui);
-    this.scene.stop(sceneKeys.battle);
-    this.scene.wake(system.map);
-  }
-
-  /**
-   * @brief 全キャラクターのHPを表示する
-   *
-   * @return void
-   */
-  logAllActorHP() {
-    console.log('キャラクターのステータス');
-    console.log('------------------------------------');
-    this.sorted.forEach((actor) => {
-      console.log(`${actor.name} HP: ${actor.hp.current}`);
-    });
-    console.log('------------------------------------');
-  }
-
-  /**
-   * @brief キャラクターの所属するグループを返す
-   *
-   * @param BattleActor キャラクター
-   * @param BattleActor[][] 検索したいグループ
-   *
-   * @return BattleActor[] 所属するグループ
-   */
-  getGroup(actor: BattleActor, groups: BattleActor[][]): BattleActor[] {
-    for (const group of groups) {
+  getGroupBelongsTo(actor: BattleActor, groups: BattleActor[][]) {
+    return groups.map((group) => {
       if (group.includes(actor)) {
         return group;
       }
-    }
-
-    return [];
+    });
   }
 
-  /**
-   * @brief キャラクターの敵グループを返す
-   *
-   * @param BattleActor キャラクター
-   * @param BattleActor[][] 検索したいグループ
-   *
-   * @return BattleActor[] 敵グループ
-   */
   getEnemyGroup(
     subject: BattleActor,
     group1: BattleActor[],
@@ -146,7 +77,7 @@ export class Battle extends Scene {
       return group1;
     }
 
-    return [];
+    return [getGhost()];
   }
 
   /**
@@ -174,12 +105,6 @@ export class Battle extends Scene {
     return 0;
   }
 
-  /**
-   * @brief キャラクターのHPの合計値を返す
-   *
-   * @param actors キャラクターの配列
-   * @returns HPの合計値
-   */
   getSumHp(actors: BattleActor[]): number {
     return actors
       .map((actor) => actor.hp.current)

@@ -16,7 +16,6 @@ export type SpriteAnims = {
 export class Actor {
   public offsetX: number = tileSize / 2;
   public offsetY: number = tileSize;
-  public dir: string = 'down';
   constructor(public sprite: GameObjects.Sprite, public tilePos: Vector2) {
     this.sprite.setOrigin(0.5, 1);
     this.sprite.setPosition(
@@ -39,12 +38,10 @@ export class Actor {
     const standingFrame = animationManager.get(direction).frames[1].frame.name;
     this.sprite.anims.stop();
     this.sprite.setFrame(standingFrame);
-    this.dir = direction;
   }
 
   startAnimation(direction: Direction) {
     this.sprite.anims.play(direction);
-    this.dir = direction;
   }
 
   getTilePos(): Vector2 {
@@ -67,15 +64,5 @@ export class Actor {
 
   getSprite(): GameObjects.Sprite {
     return this.sprite;
-  }
-
-  getdir(): string {
-    return this.dir;
-  }
-
-  changedir(dir: string): void {
-    this.sprite.anims.play(dir);
-    this.sprite.anims.stop();
-    this.dir = dir;
   }
 }

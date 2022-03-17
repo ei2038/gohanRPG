@@ -1,23 +1,16 @@
 // assets
 import player from '@/assets/characters/dynamic/player.png';
 import mapImg from '@/assets/maps/map001.png';
+import { getEnemies } from 'battleActors';
 import { BattleActor } from 'classes/BattleActor';
 // classes
 import { Direction } from 'classes/Direction';
 import { GridControls } from 'classes/GridControls';
 import { GridPhysics } from 'classes/GridPhysics';
 import { Player } from 'classes/Player';
-
-import { Cameras, Scene, Tilemaps } from 'phaser';
-import { timelineData } from 'classes/timelineWords';
-
-import { getEnemies } from 'functions/generalPurpose/getEnemies';
-
 import { system } from 'index';
-import { Types } from 'phaser';
+import { Scene, Tilemaps, Types } from 'phaser';
 import { playerAnims } from 'playerAnims';
-import { charas } from 'classes/Characters';
-import { NPC, map, events } from 'classes/exam';
 import { sceneKeys } from './sceneKeys';
 // values
 export const tileSize: number = 40;
@@ -26,6 +19,7 @@ export const assetKeys = {
   mapImg: 'mapImg',
   player: 'player',
 };
+
 export class Map extends Scene {
   public tileset?: Tilemaps.Tileset;
   public tileMap?: Tilemaps.Tilemap;
@@ -35,14 +29,13 @@ export class Map extends Scene {
   private eventPoints?: Types.Tilemaps.TiledObject[];
   private gridControls?: GridControls;
   private gridPhysics?: GridPhysics;
-  public flag: number = -1;
   private mapName: string;
-
   constructor(private json: string, public name: string) {
     super({ key: name });
     this.enemies = getEnemies(name);
     this.mapName = name;
   }
+
   public preload() {
     this.load.image(assetKeys.mapImg, mapImg);
     this.load.tilemapTiledJSON(this.name, this.json);
@@ -53,41 +46,18 @@ export class Map extends Scene {
       frameHeight: characterSize,
     });
   }
-  public npcs = new Array();
-  public cn: number = 0;
-  public makeNPC(
-    char: number,
-    x: number,
-    y: number,
-    took: Array<string>,
-    eve?: Function,
-  ) {
-    this.load.spritesheet(system.map + ',' + 'npc' + this.cn, charas[char], {
-      frameWidth: characterSize,
-      frameHeight: characterSize,
-    });
-    this.npcs.push([x, y, took.concat(), eve === undefined ? () => {} : eve]);
-    ++this.cn;
-  }
-  public setevent(name: string, took: Array<string>, eve: Function = () => {}) {
-    for (let i = 0; !!this.eventPoints && i < this.eventPoints.length; ++i) {
-      let e = this.eventPoints[i];
-      if (name === e.name && !!e.x && !!e.y) {
-        let x = Math.floor(e.x / tileSize),
-          y = Math.floor(e.y / tileSize);
-        events.set(system.map + ',' + x + ',' + y, [took.concat(), eve]);
-      }
-    }
-  }
+
   public create() {
     const space = this.input.keyboard.addKey('SPACE');
     space.on('down', () => {
-      console.log(this.player);
+      console.log(system.player);
+      system.player.levelUp();
     });
     const B = this.input.keyboard.addKey('B');
     // Bキーでバトルシーンに移行(現在のシーンは破棄せずにストップさせるだけにして、バトルシーンから戻ったら再開する)
     B.on('down', () => {
-      this.moveBattle();
+      this.cameras.main.shake(500);
+      this.scene.switch(sceneKeys.battle);
     });
 
     // マップを作成
@@ -106,10 +76,10 @@ export class Map extends Scene {
       return obj.name === 'spawnPoint';
     });
 
-    // イベントの位置を取得
     this.eventPoints = this.tileMap.filterObjects('objects', (obj) => {
-      return obj.type === 'event';
+      return obj.name === 'event';
     });
+    console.log(this.eventPoints);
 
     // プレイヤーを作成する
     const playerSprite = this.add.sprite(0, 0, 'player');
@@ -123,140 +93,30 @@ export class Map extends Scene {
       this.tileMap.widthInPixels,
       this.tileMap.heightInPixels,
     );
+    this.tileMap.width;
 
     const { x, y } = spawnPoint;
-    if (x && y) {
-      // タイルの位置を取得
-      const tileX = Math.floor(x / tileSize);
-      const tileY = Math.floor(y / tileSize);
-      this.player = new Player(playerSprite, new Phaser.Math.Vector2(tileX, tileY));
-    }
+    if (!x || !y) return;
+    // タイルの位置を取得
+    const tileX = Math.floor(x / tileSize);
+    const tileY = Math.floor(y / tileSize);
+    this.player = new Player(playerSprite, new Phaser.Math.Vector2(tileX, tileY));
 
     // グリッドの設定
     if (this.player) {
       this.gridPhysics = new GridPhysics(this.player, this.tileMap);
       this.gridControls = new GridControls(this.input, this.gridPhysics);
     }
+
     this.createAnim();
-    const shift = this.input.keyboard.addKey('SHIFT');
-    shift.on('down', () => {
-      if (!!this.player) {
-        let xy = this.player.getTilePos();
-        let z = this.player.getdir();
-        xy.x += map.get(z).x;
-        xy.y += map.get(z).y;
-        if (this.flag != -1) {
-          let n = map.get(system.map + ',' + xy.x + ',' + xy.y);
-          if (n.took.length <= this.flag) {
-            this.flag = -1;
-            n.event();
-          } else {
-            console.log(n.took[this.flag]);
-            ++this.flag;
-          }
-        } else if (!!map.has(system.map + ',' + xy.x + ',' + xy.y)) {
-          let n = map.get(system.map + ',' + xy.x + ',' + xy.y);
-          if (n.object == 'npc') {
-            switch (z) {
-              case 'up':
-                n.changedir('NDOWN');
-                break;
-              case 'down':
-                n.changedir('NUP');
-                break;
-              case 'left':
-                n.changedir('NRIGHT');
-                break;
-              case 'right':
-                n.changedir('NLEFT');
-                break;
-            }
-          } else if (n.object == 'box') {
-          }
-          console.log(n.took[0]);
-          this.flag = 1;
-        } else {
-          console.log('?');
-        }
-        console.log(system.map + ',' + xy.x + ',' + xy.y);
-      }
-    });
-    for (let i = 0; i < this.cn; ++i) {
-      //console.log(system.map);
-      let l = this.add.sprite(0, 0, system.map + ',' + 'npc' + i);
-      map.set(
-        system.map + ',' + this.npcs[i][0] + ',' + this.npcs[i][1],
-        new NPC(
-          i,
-          l,
-          new Phaser.Math.Vector2(this.npcs[i][0], this.npcs[i][1]),
-          this.npcs[i][2],
-          this.npcs[i][3],
-        ),
-      );
-      this.tileMap.putTileAt(
-        this.tileMap.getTileAt(0, 0, false, 'worldLayer'),
-        this.npcs[i][0],
-        this.npcs[i][1],
-        false,
-        'worldLayer',
-      );
-      console.log(system.map + ',' + this.npcs[i][0] + ',' + this.npcs[i][1]);
-    }
 
     // Debug graphics
     this.enableDebugMode();
-    //Dialog==================================================================
-    const push = this.input.keyboard.addKey('SHIFT');
-    push.on('down', () => {
-      this.scene.launch(sceneKeys.timelinePlayer, {
-        anotherScene: this,
-        timelinedata: timelineData,
-      });
-    });
-    //Dialog==================================================================
   }
-  public xy: Phaser.Math.Vector2 = new Phaser.Math.Vector2(-1, -1);
+
   public update(_time: number, delta: number) {
     this.gridControls?.update();
     this.gridPhysics?.update(delta);
-    if (!!this.player) {
-      let nxy = this.player.getTilePos();
-      //   if (this.flag != -1) {
-      //     let n = map.get(system.map + ',' + xy.x + ',' + xy.y);
-      //     if (n.took.length <= this.flag) {
-      //       this.flag = -1;
-      //       n.event();
-      //     } else {
-      //       console.log(n.took[this.flag]);
-      //       ++this.flag;
-      //     }
-      //   } else
-      if (this.xy.x !== nxy.x || this.xy.y !== nxy.y) {
-        this.xy = this.player.getTilePos();
-        if (!!events.has(system.map + ',' + this.xy.x + ',' + this.xy.y)) {
-          let n = events.get(system.map + ',' + this.xy.x + ',' + this.xy.y);
-          for (let i = 0; i < n[0].length; ++i) {
-            console.log(n[0][i]);
-          }
-          n[1]();
-        } else {
-          //console.log('?');
-        }
-      }
-      //console.log(system.map + ',' + xy.x + ',' + xy.y);
-    }
-  }
-
-  moveBattle() {
-    const effectsTime = 500;
-    this.cameras.main.shake(effectsTime);
-    this.cameras.main.flash(effectsTime);
-    // カメラのシェイクを終了するまで待つ
-    this.time.delayedCall(effectsTime, () => {
-      // switch -> sleep + start
-      this.scene.switch(sceneKeys.battle);
-    });
   }
 
   public createPlayerAnimation(name: string, startFrame: number, endFrame: number) {
