@@ -11,7 +11,7 @@ import {
   explanation,
   stopl,
   stopr,
-  afterGotsuji,
+  afterDakahu,
   stoper,
   beJK,
   beBijinesuman,
@@ -23,8 +23,6 @@ import {
   beRoujin,
   tutorial1,
 } from 'timelineWords/timelineWords0';
-import { beStrong } from 'skillsFunction/partySkillsFunction';
-//import { system } from 'index';
 
 export class Map0 extends Map_TPL {
   constructor() {
@@ -57,7 +55,7 @@ export class Map0 extends Map_TPL {
     super.makeNPC('Syoujo', beSyoujo, 'up');
     super.makeNPC('Majo', beMajo);
     super.makeNPC('Roujin', beRoujin, 'left');
-    super.makeNPC('notMob', afterGotsuji);
+    super.makeNPC('notMob', afterDakahu);
     super.makeNPC('stoper1', stoper);
     super.makeNPC('stoper2', stoper);
     super.makeNPC('stoper3', stoper);

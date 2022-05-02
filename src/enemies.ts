@@ -67,7 +67,7 @@ export const enemy = {
     initSkills: [stateSkills[0], buffSkills[1]],
   }),
   batman: new BattleActor({
-    name: 'バットマン',
+    name: '博っ賭マン',
     spriteSrc: batman,
     hp: { current: 4, max: 4 },
     mp: { current: 10, max: 10 },

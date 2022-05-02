@@ -108,7 +108,7 @@ export const sabaleSplash: SkillFunction = (
     if (target.hp.current > 0) {
       num++;
       const beforeHp = target.hp.current;
-      target.beInjured(attacker.buff.getAtk() * 2);
+      target.beInjured(attacker.buff.getAtk() * 1.2);
       const afterHp = target.hp.current;
       sum += Math.abs(beforeHp - afterHp);
     }
@@ -187,7 +187,7 @@ export const gingerRain: SkillFunction = (
     if (target.hp.current > 0) {
       num++;
       const beforeHp = target.hp.current;
-      target.beInjured(attacker.buff.getAtk() * 1.2);
+      target.beInjured(attacker.buff.getAtk() * 0.8);
       const afterHp = target.hp.current;
       sum += Math.abs(beforeHp - afterHp);
     }
@@ -235,7 +235,7 @@ export const sauceBigWave: SkillFunction = (
     if (target.hp.current > 0) {
       num++;
       const beforeHp = target.hp.current;
-      target.beInjured(attacker.buff.getAtk() * 2);
+      target.beInjured(attacker.buff.getAtk() * 1.2);
       const afterHp = target.hp.current;
       sum += Math.abs(beforeHp - afterHp);
     }
@@ -349,7 +349,7 @@ export const weedGrudge: SkillFunction = (
     if (target.hp.current > 0) {
       num++;
       const beforeHp = target.hp.current;
-      target.beInjured(attacker.buff.getAtk() * 2);
+      target.beInjured(attacker.buff.getAtk() * 1.2);
       const afterHp = target.hp.current;
       sum += Math.abs(beforeHp - afterHp);
       target.state.activeState('sleep', randI(3, 1));

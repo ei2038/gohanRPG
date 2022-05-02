@@ -33,7 +33,9 @@ import {
   warpPlayerByStar,
   createBoss,
   talkNPC,
+  changeEncountFlag,
 } from 'timelineWords/events';
+import { DEBUG } from 'functions/generalPurpose/debugLog';
 
 export class TimelinePlayer extends Scene {
   private dialogBox?: DialogBox;
@@ -127,8 +129,8 @@ export class TimelinePlayer extends Scene {
     }
     // タイムラインのイベントを取得してから、timelineIndexをインクリメント
     const timelineEvent = this.timeline[this.timelineIndex++];
-    console.log(this.anotherScene);
-    console.log(timelineEvent);
+    DEBUG.log(this.anotherScene);
+    DEBUG.log(timelineEvent);
 
     switch (timelineEvent.type) {
       case 'dialog': // ダイアログイベント
@@ -184,7 +186,7 @@ export class TimelinePlayer extends Scene {
         // マップシーンのキー操作を受け付けるようにする
         this.anotherScene.scene.resume();
         system.map = timelineEvent.scene;
-        console.log(system.map);
+        DEBUG.log(system.map);
         this.anotherScene.scene.switch(timelineEvent.scene);
         this.scene.stop();
         break;
@@ -211,7 +213,7 @@ export class TimelinePlayer extends Scene {
     }
   }
   private startevent(key: string, contents?: MotionEventProps) {
-    console.log(key);
+    DEBUG.log(key);
     switch (key) {
       case fixKillBossByName:
         if (contents === undefined) break;
@@ -335,6 +337,7 @@ export class TimelinePlayer extends Scene {
       case talkNPC:
         this.anotherScene?.talkNPC();
         break;
+      case changeEncountFlag:
     }
     // }
   }
@@ -376,7 +379,7 @@ export class TimelinePlayer extends Scene {
 
     if (!this.timelineData) return;
     if (!(timelineID in this.timelineData)) {
-      console.error(`[ERROR] タイムラインID[${timelineID}]は登録されていません`);
+      DEBUG.error(`[ERROR] タイムラインID[${timelineID}]は登録されていません`);
       // 登録されていないタイムラインIDが指定されていたらタイトルシーンに遷移する
       this.anotherScene?.scene.resume();
       this.scene.stop();

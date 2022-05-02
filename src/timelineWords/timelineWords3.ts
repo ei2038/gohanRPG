@@ -1,7 +1,7 @@
 import { pouler } from 'friends';
 import { Timelines } from '../classes/Timelines';
 import { Direction } from '../classes/Direction';
-import { volcanoGotsuji } from './timelineWords0';
+import { volcanoDakahu } from './timelineWords0';
 import {
   fixKillBossByName,
   removeObjectByName,
@@ -14,9 +14,9 @@ import {
   displayBossBubble,
   removeBubble,
   warpPlayerByXY,
+  moveBattleBoss,
 } from './events';
-
-//Stage3
+import { enemy } from 'enemies';
 export const explanation3: Timelines = {
   start: [
     {
@@ -378,16 +378,16 @@ export const warpstart: Timelines = {
 export const goMelcine: Timelines = {
   start: [
     { type: 'setBackgroundColor', color: '#000' },
-    { type: 'event', event: warpPlayerByXY, contents: { x: 51, y: 28 } },
+    { type: 'event', event: warpPlayerByXY, contents: { x: 51, y: 29 } },
     {
       type: 'event',
       event: setNpc,
-      contents: { name: 'Shiden', x: 52, y: 28, timeline: undefined },
+      contents: { name: 'Shiden', x: 52, y: 29, timeline: undefined },
     },
     {
       type: 'event',
       event: setNpc,
-      contents: { name: 'Pouler', x: 50, y: 28, timeline: undefined },
+      contents: { name: 'Pouler', x: 50, y: 29, timeline: undefined },
     },
     {
       type: 'event',
@@ -481,11 +481,16 @@ export const beforeMelcineBattle: Timelines = {
       text: 'このワタクシが、四天王の真の恐ろしさ、思い知らせて差し上げましょう！！',
     },
     { type: 'event', event: removeBubble },
-    //     { type: 'endTimeline' },
-    //   ],
-    // };
-    // export const afterMelcineBattle: Timelines = {
-    //   start: [
+    {
+      type: 'event',
+      event: moveBattleBoss,
+      contents: { battleActor: enemy.melcine },
+    },
+    { type: 'endTimeline' },
+  ],
+};
+export const afterMelcineBattle: Timelines = {
+  start: [
     { type: 'event', event: displayBossBubble, contents: { bubbleIndex: 3 } },
     {
       type: 'dialog',
@@ -506,7 +511,7 @@ export const beforeMelcineBattle: Timelines = {
     {
       type: 'event',
       event: changeNpcDir,
-      contents: { name: 'player', direction: Direction.LEFT },
+      contents: { name: 'player', direction: Direction.RIGHT },
     },
     {
       type: 'dialog',
@@ -517,7 +522,7 @@ export const beforeMelcineBattle: Timelines = {
     {
       type: 'event',
       event: changeNpcDir,
-      contents: { name: 'Shiden', direction: Direction.RIGHT },
+      contents: { name: 'Shiden', direction: Direction.LEFT },
     },
     { type: 'dialog', actorName: 'シデン', text: 'うむ、付き合うだけ時間の無駄だ。' },
     { type: 'event', event: displayBossBubble, contents: { bubbleIndex: 3 } },
@@ -577,7 +582,7 @@ export const beforeMelcineBattle: Timelines = {
         name: 'startD',
         x: 4,
         y: 12,
-        timeline: volcanoGotsuji,
+        timeline: volcanoDakahu,
         setEventMap: 'map0',
       },
     },
@@ -588,7 +593,7 @@ export const beforeMelcineBattle: Timelines = {
         name: 'startD',
         x: 4,
         y: 13,
-        timeline: volcanoGotsuji,
+        timeline: volcanoDakahu,
         setEventMap: 'map0',
       },
     },

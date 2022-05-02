@@ -1,12 +1,7 @@
 import { Direction } from 'classes/Direction';
 import { Timelines } from 'classes/Timelines';
+import { enemy } from 'enemies';
 import { mough } from 'friends';
-// import { Timelines } from './Timelines';
-// import { Direction } from './Direction';
-// import { castleAnnounce } from './timelineWords0';
-// import { Timelines } from '../classes/Timelines';
-// import { Direction } from '../classes/Direction';
-// import { castleAnnounce } from './timelineWords0';
 import {
   fixKillBossByName,
   removeEventByXYs,
@@ -21,10 +16,9 @@ import {
   removeBubble,
   warpPlayerByXY,
   zoomDown,
+  moveBattleBoss,
 } from './events';
 import { castleAnnounce } from './timelineWords0';
-
-//Stage4
 export const explanation4: Timelines = {
   start: [
     {
@@ -56,6 +50,11 @@ export const addMough: Timelines = {
       type: 'event',
       event: setNpc,
       contents: { name: 'Mough', x: 30, y: 23, timeline: undefined },
+    },
+    {
+      type: 'event',
+      event: changeNpcDir,
+      contents: { name: 'player', direction: Direction.UP },
     },
     {
       type: 'event',
@@ -243,21 +242,21 @@ export const backboss: Timelines = {
 export const goEleca: Timelines = {
   start: [
     { type: 'setBackgroundColor', color: '#000' },
-    { type: 'event', event: warpPlayerByXY, contents: { x: 29, y: 50 } },
+    { type: 'event', event: warpPlayerByXY, contents: { x: 29, y: 49 } },
     {
       type: 'event',
       event: setNpc,
-      contents: { name: 'Shiden', x: 28, y: 50, timeline: undefined },
+      contents: { name: 'Shiden', x: 28, y: 49, timeline: undefined },
     },
     {
       type: 'event',
       event: setNpc,
-      contents: { name: 'Pouler', x: 30, y: 50, timeline: undefined },
+      contents: { name: 'Pouler', x: 30, y: 49, timeline: undefined },
     },
     {
       type: 'event',
       event: setNpc,
-      contents: { name: 'Mough', x: 27, y: 50, timeline: undefined },
+      contents: { name: 'Mough', x: 27, y: 49, timeline: undefined },
     },
     {
       type: 'event',
@@ -383,11 +382,16 @@ export const beforeElecaBattle: Timelines = {
       text: '全員まとめて叩き潰す。',
     },
     { type: 'event', event: removeBubble },
-    //     { type: 'endTimeline' },
-    //   ],
-    // };
-    // export const afterElecaBattle: Timelines = {
-    //   start: [
+    {
+      type: 'event',
+      event: moveBattleBoss,
+      contents: { battleActor: enemy.eleca },
+    },
+    { type: 'endTimeline' },
+  ],
+};
+export const afterElecaBattle: Timelines = {
+  start: [
     { type: 'event', event: displayBossBubble, contents: { bubbleIndex: 4 } },
     { type: 'dialog', actorName: 'エレカ', text: 'うぐっ…おかあ…さま…。' },
     {

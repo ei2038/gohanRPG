@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="40" tileheight="40" infinite="0" nextlayerid="4" nextobjectid="43">
+ <editorsettings>
+  <export target="../src/json/map002.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" name="map001" tilewidth="40" tileheight="40" tilecount="1296" columns="48">
   <image source="../src/assets/maps/map001.png" width="1920" height="1080"/>
   <tile id="0">
@@ -7872,7 +7875,6 @@
   <object id="2" name="woop" type="event" gid="392" x="1160" y="440" width="40" height="40" rotation="90"/>
   <object id="3" name="woopboss" type="event" gid="1" x="520" y="400" width="40" height="40" rotation="90"/>
   <object id="20" name="beforeAte" type="event" gid="1" x="520" y="280" width="40" height="40" rotation="90"/>
-  <object id="22" name="afterAte" type="event" gid="1" x="520" y="240" width="40" height="40" rotation="90"/>
   <object id="4" name="explanation1" type="hint" gid="2" x="200" y="0" width="40" height="40" rotation="90"/>
   <object id="5" name="stone1" type="hint" gid="2" x="440" y="560" width="40" height="40" rotation="90"/>
   <object id="6" name="stone3" type="hint" gid="2" x="1040" y="960" width="40" height="40" rotation="90"/>

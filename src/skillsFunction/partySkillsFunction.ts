@@ -471,9 +471,9 @@ export const aunBless = (scene: Scene, attacker: BattleActor, targets: BattleAct
     { type: 'dialog', text: `${attacker.name}の阿吽の加護！` },
     {
       type: 'dialog',
-      text: `${changeToFriendsView(attacker, targets)}の防御力が平均 ${
-        sum / num
-      } 上がった！`,
+      text: `${changeToFriendsView(attacker, targets)}の防御力が平均 ${Math.floor(
+        sum / num,
+      )} 上がった！`,
     },
     { type: 'endTimeline' },
   ]);
@@ -634,10 +634,9 @@ export const protect: SkillFunction = (
     { type: 'dialog', text: `${attacker.name}のまもる！` },
     {
       type: 'dialog',
-      text: `${attacker}は挑発し、${changeToFriendsView(
+      text: `${attacker.name}は挑発し、${changeToFriendsView(targets[0], [
         attacker,
-        targets,
-      )}の注意を引いた！`,
+      ])}の注意を引いた！`,
     },
     { type: 'endTimeline' },
   ]);

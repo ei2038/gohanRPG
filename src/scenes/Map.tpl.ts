@@ -26,6 +26,8 @@ import { getEnemies } from 'functions/generalPurpose/getEnemies';
 import { marc } from 'friends';
 import { randI } from 'functions/generalPurpose/rand';
 import { Direction } from 'classes/Direction';
+import { afterBossBattles } from 'timelineWords/afterBossBattles';
+import { DEBUG } from 'functions/generalPurpose/debugLog';
 
 export const tileSize: number = 40;
 export const characterSize: number = 32;
@@ -153,7 +155,7 @@ export class Map_TPL extends Scene {
             timelineData: n,
           });
         } else {
-          console.log('?');
+          DEBUG.log('?');
         }
       }
     });
@@ -164,18 +166,18 @@ export class Map_TPL extends Scene {
       });
     });
     // Bキーでバトルシーンに移行(現在のシーンは破棄せずにストップさせるだけにして、バトルシーンから戻ったら再開する)
-    const B = this.input.keyboard.addKey('B').on('down', () => {
-      this.moveBattle();
-    });
-    const G = this.input.keyboard.addKey('G').on('down', () => {
-      system.collidesFlag = !system.collidesFlag;
-    });
-    const F = this.input.keyboard.addKey('F').on('down', () => {
-      system.DEBUG_isIgnoreBattle = !system.DEBUG_isIgnoreBattle;
-    });
-    const V = this.input.keyboard.addKey('V').on('down', () => {
-      system.eventFlag = !system.eventFlag;
-    });
+    /* const B = this.input.keyboard.addKey('B').on('down', () => { */
+    /*   this.moveBattle(); */
+    /* }); */
+    /* const G = this.input.keyboard.addKey('G').on('down', () => { */
+    /*   system.collidesFlag = !system.collidesFlag; */
+    /* }); */
+    /* const F = this.input.keyboard.addKey('F').on('down', () => { */
+    /*   system.DEBUG._isIgnoreBattle = !system.DEBUG._isIgnoreBattle; */
+    /* }); */
+    /* const V = this.input.keyboard.addKey('V').on('down', () => { */
+    /*   system.eventFlag = !system.eventFlag; */
+    /* }); */
     // マップを作成
     this.tileMap = this.make.tilemap({ key: this.name });
     this.tileset = this.tileMap.addTilesetImage('map001', assetKeys.mapImg);
@@ -195,17 +197,17 @@ export class Map_TPL extends Scene {
     this.eventPoints = this.tileMap.filterObjects('objects', (obj) => {
       return obj.type === 'event';
     });
-    console.log(this.eventPoints);
+    DEBUG.log(this.eventPoints);
     // 調べるイベントの位置を取得
     this.hintPoints = this.tileMap.filterObjects('objects', (obj) => {
       return obj.type === 'hint';
     });
-    console.log(this.hintPoints);
+    DEBUG.log(this.hintPoints);
     // npcの位置を取得
     this.npcPoints = this.tileMap.filterObjects('objects', (obj) => {
       return obj.type === 'npc';
     });
-    console.log(this.npcPoints);
+    DEBUG.log(this.npcPoints);
     // プレイヤーを作成する
     const playerSprite = this.add.sprite(0, 0, 'player');
 
@@ -236,7 +238,17 @@ export class Map_TPL extends Scene {
   }
 
   public update(_time: number, delta: number) {
-    if (this.battleFlag) {
+    if (system.isBossBattleWin) {
+      system.isBossBattleWin = false;
+      system.isBossBattle = false;
+      const bossName = system.boss?.name;
+
+      if (!bossName) return;
+      this.scene.launch(sceneKeys.timelinePlayer, {
+        anotherScene: this,
+        timelineData: afterBossBattles.get(bossName),
+      });
+    } else if (this.battleFlag) {
       if (!this.gridPhysics?.isMoving()) {
         if (!!this.player) {
           let nxy = this.player.getTilePos();
@@ -330,7 +342,7 @@ export class Map_TPL extends Scene {
     } else if (charName === 'player') {
       this.player?.changedir(direction);
     } else {
-      console.log('not found');
+      DEBUG.log('not found');
     }
   }
   public talkNPC() {
@@ -370,7 +382,7 @@ export class Map_TPL extends Scene {
       npcs.delete(point);
       names.delete(`${system.map},${charName}`);
     } else {
-      console.log(`not found ${system.map},${charName}`);
+      DEBUG.log(`not found ${system.map},${charName}`);
     }
   }
   //ボスを消す
@@ -399,7 +411,7 @@ export class Map_TPL extends Scene {
         this.log = this.add.sprite(bubblePoint.x, bubblePoint.y, `log${bubbleIndex}`);
       }
     } else {
-      console.log('not found');
+      DEBUG.log('not found');
     }
   }
   // 吹き出し表示(ボス限定)
@@ -408,7 +420,7 @@ export class Map_TPL extends Scene {
     let bossY = this.boss?.y;
     if (bossX !== undefined && bossY !== undefined) {
       this.log?.destroy();
-      console.log(OBC);
+      DEBUG.log(OBC);
       if (OBC) {
         bossY -= tileSize * 3;
         bossX -= tileSize * 1.1;
@@ -418,7 +430,7 @@ export class Map_TPL extends Scene {
         this.log = this.add.sprite(bossX, bossY, `log${bubbleIndex}`);
       }
     } else {
-      console.log('unknown');
+      DEBUG.log('unknown');
     }
   }
   //吹き出し消し
@@ -435,7 +447,7 @@ export class Map_TPL extends Scene {
     this.moveBattle();
   }
   public moveBattle() {
-    if (!getEnemies(system.map).length) return;
+    if (!getEnemies(system.map).length && !system.isBossBattle) return;
     this.battleFlag = false;
     const effectsTime = 500;
     this.cameras.main.flash(effectsTime);
@@ -447,5 +459,9 @@ export class Map_TPL extends Scene {
   }
   public zoomDown() {
     this.cameras.main.zoomTo(1, 1000);
+  }
+
+  public changeEncounterFlag() {
+    system.DEBUG_isIgnoreBattle = system.DEBUG_isIgnoreBattle;
   }
 }

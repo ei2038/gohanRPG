@@ -18,3 +18,4 @@ export const zoomDown = 'zoomDown';
 export const warpPlayerByStar = 'warpPlayerByStar';
 export const createBoss = 'createBoss';
 export const talkNPC = 'talkNPC';
+export const changeEncountFlag = 'changeEncountFlag';

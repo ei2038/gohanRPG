@@ -6,6 +6,7 @@ import { Battle } from './Battle';
 import { Skill } from 'classes/Skill';
 import { randArr } from 'functions/generalPurpose/rand';
 import { State } from 'classes/State';
+import { DEBUG } from 'functions/generalPurpose/debugLog';
 
 type EnemySprite = {
   sprite: GameObjects.Sprite;
@@ -78,7 +79,7 @@ export class UI extends Scene {
   }
 
   preload() {
-    console.log('START UI SCENE');
+    DEBUG.log('START UI SCENE');
 
     // 敵キャラクターのスプライト画像を読み込む(enemies[n].spriteSrc)
     this.enemies.forEach((enemy) => {
@@ -240,7 +241,7 @@ export class UI extends Scene {
         });
       }
       skills.forEach((skill) => {
-        console.error(skill.getName());
+        DEBUG.error(skill.getName());
       });
 
       skills.forEach((skill) => {

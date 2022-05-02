@@ -39,8 +39,8 @@ export class Map3 extends Map_TPL {
     {
       this.setBoss(51, 24, 'Mel', system.isBossKilled.get('Melcine'), 0.25);
       super.setEvent('exit', warp0);
-      super.setHint('explanation2', explanation3);
-      super.setEvent('add3', addPouler);
+      super.setHint('explanation3', explanation3);
+      super.setEvent('add3', addPouler, system.isExistActorInParty(pouler.name));
       super.setEvent('goMelcine', goMelcine, system.isBossKilled.get('Melcine'));
       super.setEvent(
         'beforeMelcine',
@@ -57,6 +57,9 @@ export class Map3 extends Map_TPL {
       super.setHint('woop1to2', reII);
       super.setHint('wooptoboss', reIII);
       super.setHint('woopstart', warpstart);
+      super.setHint('roadhint1', III);
+      super.setHint('roadhint2', III);
+      super.setHint('roadhint3', III);
     }
   }
 

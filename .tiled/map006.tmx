@@ -7926,7 +7926,7 @@
   <object id="31" name="spawnPoint4" type="event" gid="314" x="1200" y="520" width="40" height="40" rotation="90"/>
   <object id="25" name="spawnPoint5" type="event" gid="314" x="1880" y="1760" width="40" height="40" rotation="90"/>
   <object id="33" name="spawnPoint5" type="event" gid="314" x="1920" y="1760" width="40" height="40" rotation="90"/>
-  <object id="27" name="exit" type="event" gid="51" x="1040" y="1800" width="40" height="40" rotation="90"/>
+  <object id="27" name="dakahu" type="npc" gid="51" x="1040" y="1800" width="40" height="40" rotation="90"/>
   <object id="28" name="exit" type="event" gid="51" x="1080" y="1800" width="40" height="40" rotation="90"/>
   <object id="34" name="explanation5" type="hint" gid="149" x="1120" y="1800" width="40" height="40" rotation="90"/>
   <object id="38" name="goAte" type="event" gid="50" x="360" y="1640" width="40" height="40" rotation="90"/>

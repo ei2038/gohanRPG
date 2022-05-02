@@ -1,3 +1,4 @@
+import { enemy } from 'enemies';
 import { sceneKeys } from './sceneKeys';
 import { json, system } from 'index';
 import { Map_TPL } from './Map.tpl';
@@ -30,12 +31,9 @@ import {
   startEleca,
   startMelcine,
   beforeObcBattle,
-  // endAte,
-  // endBte,
-  // endEleca,
-  // endMelcine,
-  // afterObcBattle,
+  finalDakahu,
 } from 'timelineWords/timelineWords5';
+import { reAfterBossBattles } from 'timelineWords/afterBossBattles';
 
 export class Map5 extends Map_TPL {
   constructor() {
@@ -46,6 +44,7 @@ export class Map5 extends Map_TPL {
     super.setnpcimage('Shiden', 1, shiden.spriteSrc);
     super.setnpcimage('Pouler', 1, pouler.spriteSrc);
     super.setnpcimage('Mough', 1, mough.spriteSrc);
+    super.setnpcimage('dakahu', 0);
     this.loadBossimage('Ate', Ate);
     this.loadBossimage('Bte', Bte);
     this.loadBossimage('Melcine', Melcine);
@@ -60,6 +59,7 @@ export class Map5 extends Map_TPL {
     else if (!system.isBossKilled.get('reEleca')) this.createBoss(30, 4, 'Eleca');
     else if (!system.isBossKilled.get('reObc')) this.createBoss(48, 35, 'Obc');
     {
+      super.makeNPC('dakahu', finalDakahu, 'right');
       super.setHint('explanation5', explanation5);
       super.setEvent('exit', warp0);
       super.setEvent('toboss1', warpAte);
@@ -83,9 +83,35 @@ export class Map5 extends Map_TPL {
       super.setEvent('goObc', goObc, system.isBossKilled.get('Obc'));
       super.setEvent('startObc', beforeObcBattle, system.isBossKilled.get('Obc'));
     }
+
+    const { ate, bte, melcine, eleca } = enemy;
+
+    for (let i = 0; i < 5; i++) {
+      ate;
+      bte;
+      melcine;
+      eleca;
+    }
+
+    ate.beHealed(ate.hp.max);
+    bte.beHealed(bte.hp.max);
+    melcine.beHealed(melcine.hp.max);
+    eleca.beHealed(eleca.hp.max);
   }
   public update(_time: number, delta: number): void {
-    super.update(_time, delta);
+    if (system.isBossBattleWin) {
+      system.isBossBattleWin = false;
+      system.isBossBattle = false;
+      const bossName = system.boss?.name;
+
+      if (!bossName) return;
+      this.scene.launch(sceneKeys.timelinePlayer, {
+        anotherScene: this,
+        timelineData: reAfterBossBattles.get(bossName),
+      });
+    } else {
+      super.update(_time, delta);
+    }
   }
   public createBoss(x: number, y: number, boss: string) {
     if (boss == 'Ate') this.setBoss(x, y, boss, false, 0.5, true);

@@ -128,7 +128,7 @@ export type SkillFunction = (
 
 export const skills: Skill[] = [
   new Skill('裏拳', uraken, false, true),
-  new Skill('バットモビール', batmobiru, true, true), // 全体攻撃
+  new Skill('博賭モビール', batmobiru, true, true), // 全体攻撃
   new Skill('ヒール', heal, false, false), // 単体回復
   new Skill('インサート', insert, false, false), // 単体回復
   new Skill('ポップ', pop, false, true), // 単体攻撃

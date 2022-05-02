@@ -1,4 +1,3 @@
-import { Scene } from 'phaser';
 import { Map_TPL } from 'scenes/Map.tpl';
 import { Timeline } from './Timeline';
 

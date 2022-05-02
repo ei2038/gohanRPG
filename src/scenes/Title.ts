@@ -1,16 +1,14 @@
 import { GameObjects, Scene } from 'phaser';
 import { H, W } from 'functions/DOM/windowInfo';
 import { sceneKeys } from 'scenes/sceneKeys';
-import { hints } from 'classes/exam';
 import logo from '@/images/titleimage.jpg';
-import button from '@/images/button.png';
-import buttonOnHover from '@/images/button_onhover.png';
+
+import buttonFrame from '@/images/button/button_frame.png';
+import buttonFrameDark from '@/images/button/button_frame_dark.png';
+import buttonOnClick from '@/images/button/button_onClick.png';
 
 export class Title extends Scene {
-  private backgroundColor: string = '#300000';
-  private backgroundColor2: string = '#BDBDFD';
-  private span: number = 1;
-  private flash: number = 1;
+  private backgroundColor: string = '#111111';
   private button?: GameObjects.Image;
 
   constructor() {
@@ -19,8 +17,9 @@ export class Title extends Scene {
 
   preload() {
     this.load.image('logo', logo);
-    this.load.image('button', button);
-    this.load.image('button_onhover', buttonOnHover);
+    this.load.image('button', buttonFrame);
+    this.load.image('button_onhover', buttonFrameDark);
+    this.load.image('button_onclick', buttonOnClick);
   }
 
   create() {
@@ -37,14 +36,9 @@ export class Title extends Scene {
     this.time.addEvent({
       delay: 3000,
       callback: () => {
-        // this.add.rectangle(0, height - height / 2, width * 10, height, 0x000);
-        this.add.rectangle(0, height, width * 2, 300, 0x000);
         // 座標の中心を指定
         this.button = this.add.image(0, 0, 'button');
-        this.button.setPosition(
-          width - this.button.width,
-          height - this.button.height / 2,
-        );
+        this.button.setPosition(width / 2, height / 2);
         this.button?.setInteractive();
         // ボタンにカーソルが乗った時
         this.button?.on('pointerover', () => {
