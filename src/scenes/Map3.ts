@@ -21,6 +21,7 @@ import {
   //afterMelcineBattle,
 } from 'timelineWords/timelineWords3';
 import { pouler, shiden } from 'friends';
+import { dir1, dir2, dir3 } from '../timelineWords/timelineWords3';
 
 export class Map3 extends Map_TPL {
   constructor() {
@@ -28,8 +29,6 @@ export class Map3 extends Map_TPL {
   }
   preload() {
     super.preload();
-    // super.setnpcimage('Shiden', 1);
-    // super.setnpcimage('Pouler', 1);
     super.setnpcimage('Shiden', 1, shiden.spriteSrc);
     super.setnpcimage('Pouler', 1, pouler.spriteSrc);
     this.loadBossimage('Mel', Mel);
@@ -57,9 +56,9 @@ export class Map3 extends Map_TPL {
       super.setHint('woop1to2', reII);
       super.setHint('wooptoboss', reIII);
       super.setHint('woopstart', warpstart);
-      super.setHint('roadhint1', III);
-      super.setHint('roadhint2', III);
-      super.setHint('roadhint3', III);
+      super.setHint('roadhint1', dir1);
+      super.setHint('roadhint2', dir2);
+      super.setHint('roadhint3', dir3);
     }
   }
 

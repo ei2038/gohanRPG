@@ -241,14 +241,14 @@ export const restart0: Timelines = {
 export const restart1: Timelines = {
   start: [
     { type: 'dialog', text: '道を踏み外した！' },
-    { type: 'event', event: warpPlayerByXY, contents: { x: 58, y: 3 } },
+    { type: 'event', event: warpPlayerByXY, contents: { x: 59, y: 3 } },
     { type: 'endTimeline' },
   ],
 };
 export const restart2: Timelines = {
   start: [
     { type: 'dialog', text: '道を踏み外した！' },
-    { type: 'event', event: warpPlayerByXY, contents: { x: 26, y: 38 } },
+    { type: 'event', event: warpPlayerByXY, contents: { x: 26, y: 39 } },
     { type: 'endTimeline' },
   ],
 };
@@ -282,7 +282,7 @@ export const III: Timelines = {
     },
   ],
   Yes: [
-    { type: 'event', event: warpPlayerByXY, contents: { x: 26, y: 15 } },
+    { type: 'event', event: warpPlayerByXY, contents: { x: 26, y: 39 } },
     { type: 'endTimeline' },
   ],
   No: [{ type: 'endTimeline' }],
@@ -317,7 +317,7 @@ export const reI: Timelines = {
     },
   ],
   Yes: [
-    { type: 'event', event: warpPlayerByXY, contents: { x: 24, y: 13 } },
+    { type: 'event', event: warpPlayerByXY, contents: { x: 24, y: 15 } },
     { type: 'endTimeline' },
   ],
   No: [{ type: 'endTimeline' }],
@@ -351,7 +351,7 @@ export const reIII: Timelines = {
     },
   ],
   Yes: [
-    { type: 'event', event: warpPlayerByXY, contents: { x: 9, y: 34 } },
+    { type: 'event', event: warpPlayerByXY, contents: { x: 11, y: 34 } },
     { type: 'endTimeline' },
   ],
   No: [{ type: 'endTimeline' }],

@@ -8222,9 +8222,9 @@
   <object id="657" name="restart2" type="event" gid="392" x="360" y="1200" width="40" height="40" rotation="90"/>
   <object id="658" name="woop2" type="hint" gid="101" x="440" y="1360" width="40" height="40" rotation="90"/>
   <object id="659" name="spawnPoint" gid="202" x="80" y="0" width="40" height="40" rotation="90"/>
-  <object id="660" name="woop1to2" type="event" gid="202" x="1040" y="1560" width="40" height="40" rotation="90"/>
-  <object id="661" name="woopto1" type="event" gid="202" x="2360" y="120" width="40" height="40" rotation="90"/>
-  <object id="662" name="wooptoboss" type="event" gid="202" x="1240" y="1200" width="40" height="40" rotation="90"/>
+  <object id="660" name="woop1to2" type="hint" gid="202" x="1040" y="1560" width="40" height="40" rotation="90"/>
+  <object id="661" name="woopto1" type="hint" gid="202" x="2360" y="120" width="40" height="40" rotation="90"/>
+  <object id="662" name="wooptoboss" type="hint" gid="202" x="1240" y="1200" width="40" height="40" rotation="90"/>
   <object id="663" name="roadhint3" type="hint" gid="149" x="1040" y="1480" width="40" height="40" rotation="90"/>
   <object id="665" name="roadhint1" type="hint" gid="149" x="40" y="80" width="40" height="40" rotation="90"/>
   <object id="666" name="roadhint2" type="hint" gid="149" x="2280" y="80" width="40" height="40" rotation="90"/>
